@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Royalro Invoice Generator</title>
+  <title>Royalro Quotation Generator</title>
   <style>
     body {
       font-family: 'Poppins';
@@ -22,7 +22,7 @@
       text-align: center;
       color: #ff5fa2;
     }
-    .input-section, .invoice {
+    .input-section, .quotation {
       margin-top: 30px;
     }
     label {
@@ -46,7 +46,7 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    .invoice {
+    .quotation {
       border-top: 3px solid #ff5fa2;
       padding-top: 20px;
     }
@@ -81,9 +81,9 @@
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
-  <a href="quotation.html">Go to Quotation</a>
+   <a href="index.html">Go to Invoice</a>
   <div class="container">
-    <h1>Royalro Invoice Generator</h1>
+    <h1>Royalro Quotation Generator</h1>
 
     <div class="input-section">
       <label>Customer Name</label>
@@ -93,7 +93,7 @@
       <input type="number" id="deliveryFee" value="0"/>
 
       <button onclick="addRow()">Add Item</button>
-      <button onclick="generateInvoice()">Generate Invoice</button>
+      <button onclick="generateQuotation()">Generate Quotation</button>
       <button onclick="downloadPNG()">Download as PNG</button>
     </div>
 
@@ -107,13 +107,13 @@
           <th>Amount (LKR)</th>
         </tr>
       </thead>
-      <tbody id="invoiceBody"></tbody>
+      <tbody id="quotationBody"></tbody>
     </table>
 
-    <div class="invoice" id="invoice" style="display: none; margin: 15px; padding: 40px;">
+    <div class="quotation" id="quotation" style="display: none; margin: 15px; padding: 40px;">
       <img src="royalro copy.png" alt="Royalro Logo" class="logo"/>
-      <p><strong>Invoice Number:</strong> <span id="invoiceNum"></span></p>
-      <p><strong>Date:</strong> <span id="invoiceDate"></span></p>
+      <p><strong>Quotation Number:</strong> <span id="quotationNum"></span></p>
+      <p><strong>Date:</strong> <span id="quotationDate"></span></p>
       <p><strong>Billed to:</strong> <span id="billTo"></span></p>
 
       <table>
@@ -126,7 +126,7 @@
           <th>Amount (LKR)</th>
         </tr>
       </thead>
-      <tbody id="invoiceBody2"></tbody>
+      <tbody id="quotationBody2"></tbody>
     </table>
 
       <p class="total">Sub Total: <span id="subtotal"></span> LKR</p>
@@ -140,9 +140,8 @@
       <p><strong>Holder:</strong> M D S Aloka</p>
 
       <div class="footer">Thank you for shopping with us!</div>
+      <p style="font-size: smaller; color: gray; text-align: center">*** This is a system-generated document. Signature not required. ***</p>
     </div>
-
-    
   </div>
 
   <script>
@@ -174,37 +173,37 @@
         </tr>
       `;
 
-      document.getElementById('invoiceBody').innerHTML += rowHTML;
-      document.getElementById('invoiceBody2').innerHTML += rowHTML;
+      document.getElementById('quotationBody').innerHTML += rowHTML;
+      document.getElementById('quotationBody2').innerHTML += rowHTML;
     }
 
-    function generateInvoice() {
+    function generateQuotation() {
       const customerName = document.getElementById('customerName').value;
       const deliveryFee = parseFloat(document.getElementById('deliveryFee').value);
 
       const subtotal = rows.reduce((acc, row) => acc + row.amount, 0);
-      const total = subtotal + deliveryFee;
+      const total = subtotal + deliveryFee; // include delivery fee
 
-      document.getElementById('invoiceNum').textContent = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 14);
-      document.getElementById('invoiceDate').textContent = new Date().toLocaleDateString();
+      document.getElementById('quotationNum').textContent = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 14);
+      document.getElementById('quotationDate').textContent = new Date().toLocaleDateString();
       document.getElementById('billTo').textContent = customerName;
 
       document.getElementById('subtotal').textContent = subtotal.toFixed(2);
       document.getElementById('deliveryFeeDisplay').textContent = deliveryFee.toFixed(2);
       document.getElementById('total').textContent = total.toFixed(2);
-      document.getElementById('invoice').style.display = 'block';
+      document.getElementById('quotation').style.display = 'block';
     }
 
     function downloadPNG() {
-      const invoiceElement = document.getElementById('invoice');
-      if (!invoiceElement || invoiceElement.style.display === 'none') {
-        alert('Please generate the invoice first.');
+      const quotationElement = document.getElementById('quotation');
+      if (!quotationElement || quotationElement.style.display === 'none') {
+        alert('Please generate the quotation first.');
         return;
       }
 
-      html2canvas(invoiceElement, { scale: 2 }).then(canvas => {
+      html2canvas(quotationElement, { scale: 2 }).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'Royalro_Invoice.png';
+        link.download = 'Royalro_Quotation.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
       });
